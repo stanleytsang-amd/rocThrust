@@ -88,7 +88,7 @@ namespace __parallel_for
     hipError_t THRUST_HIP_RUNTIME_FUNCTION
     parallel_for(Size num_items, F f, hipStream_t stream)
     {
-        using config    = kernel_config<256, 1>;
+        using config    = kernel_config<64, 1>;
         bool debug_sync = THRUST_HIP_DEBUG_SYNC_FLAG;
         // Use debug_sync
         (void)debug_sync;

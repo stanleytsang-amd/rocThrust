@@ -1123,13 +1123,20 @@ TYPED_TEST(TransformTests, TestTransformUnaryCountingIterator)
 
     for(auto size : get_sizes())
     {
-        size = thrust::min<size_t>(size, std::numeric_limits<T>::max());
+		if (std::is_same<T, float>::value || std::is_same<T, double>::value)
+		{
+			size = thrust::min<size_t>(size, std::numeric_limits<size_t>::max());
+		}
+		else
+		{
+			size = thrust::min<size_t>(size, std::numeric_limits<T>::max());
+		}
 
         thrust::counting_iterator<T, thrust::host_system_tag> h_first
             = thrust::make_counting_iterator<T>(0);
         thrust::counting_iterator<T, thrust::device_system_tag> d_first
             = thrust::make_counting_iterator<T>(0);
-
+		
         thrust::host_vector<U>   h_result(size);
         thrust::device_vector<U> d_result(size);
 
@@ -1149,7 +1156,14 @@ TYPED_TEST(TransformTests, TestTransformBinaryCountingIterators)
 
     for(auto size : get_sizes())
     {
-        size = thrust::min<size_t>(size, std::numeric_limits<T>::max());
+		if (std::is_same<T, float>::value || std::is_same<T, double>::value)
+		{
+			size = thrust::min<size_t>(size, std::numeric_limits<size_t>::max());
+		}
+		else
+		{
+			size = thrust::min<size_t>(size, std::numeric_limits<T>::max());
+		}
 
         thrust::counting_iterator<T, thrust::host_system_tag> h_first
             = thrust::make_counting_iterator<T>(0);

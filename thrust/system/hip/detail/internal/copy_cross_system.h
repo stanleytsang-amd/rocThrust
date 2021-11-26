@@ -86,12 +86,14 @@ namespace __copy
     {
         // WORKAROUND
 #if defined(THRUST_HIP_DEVICE_CODE)
+			printf("cross_system_copy_n 4 1\n");
         THRUST_UNUSED_VAR(sys1);
         THRUST_UNUSED_VAR(sys2);
         THRUST_UNUSED_VAR(n);
         THRUST_UNUSED_VAR(begin);
         return result;
 #else
+				printf("cross_system_copy_n 4 2\n");
         typedef typename iterator_traits<InputIt>::value_type InputTy;
         if (n > 0) {
           trivial_device_copy(derived_cast(sys1),
@@ -151,8 +153,6 @@ namespace __copy
                         OutputIt                                  result,
                         thrust::detail::false_type) // non-trivial copy
     {
-
-
       // struct workaround is required for HIP-clang
       // THRUST_HIP_PRESERVE_KERNELS_WORKAROUND is required for HCC
       struct workaround
@@ -165,6 +165,7 @@ namespace __copy
                               OutputIt                                  result)
           {
   #if __HCC__ && __HIP_DEVICE_COMPILE__
+  				printf("cross_system_copy_n 3 1\n");
               THRUST_HIP_PRESERVE_KERNELS_WORKAROUND(
                 (cross_system_copy_n_hd_nt<H, D, InputIt, Size, OutputIt>)
               );
@@ -173,6 +174,7 @@ namespace __copy
               THRUST_UNUSED_VAR(first);
               THRUST_UNUSED_VAR(num_items);
   #else
+	  	printf("cross_system_copy_n 3 2\n");
               return cross_system_copy_n_hd_nt(host_s, device_s, first, num_items, result);
   #endif
           }
@@ -184,6 +186,7 @@ namespace __copy
                               Size                                      num_items,
                               OutputIt                                  result)
           {
+			  	printf("cross_system_copy_n 3 3\n");
             THRUST_UNUSED_VAR(host_s);
             THRUST_UNUSED_VAR(device_s);
             THRUST_UNUSED_VAR(first);
@@ -259,6 +262,7 @@ cross_system_copy_n(thrust::hip_rocprim::execution_policy<D>& device_s,
                       OutputIt&                                 result)
       {
 #if __HCC__ && __HIP_DEVICE_COMPILE__
+				printf("cross_system_copy_n 2 1\n");	
           THRUST_HIP_PRESERVE_KERNELS_WORKAROUND(
             (cross_system_copy_n_dh_nt<D, H, InputIt, Size, OutputIt>)
           );
@@ -267,6 +271,7 @@ cross_system_copy_n(thrust::hip_rocprim::execution_policy<D>& device_s,
           THRUST_UNUSED_VAR(first);
           THRUST_UNUSED_VAR(num_items);
 #else
+					printf("cross_system_copy_n 2 2\n");	
           result = cross_system_copy_n_dh_nt(device_s, host_s, first, num_items, result);
 #endif
       }
@@ -278,6 +283,7 @@ cross_system_copy_n(thrust::hip_rocprim::execution_policy<D>& device_s,
                       Size                                      num_items,
                       OutputIt&                                 result)
       {
+		  				printf("cross_system_copy_n 2 3\n");	
         THRUST_UNUSED_VAR(device_s);
         THRUST_UNUSED_VAR(host_s);
         THRUST_UNUSED_VAR(first);
@@ -300,6 +306,7 @@ cross_system_copy_n(thrust::hip_rocprim::execution_policy<D>& device_s,
     OutputIt THRUST_HIP_FUNCTION
     cross_system_copy_n(cross_system<System1, System2> systems, InputIt begin, Size n, OutputIt result)
     {
+				printf("cross_system_copy_n 1\n");
         return cross_system_copy_n(
             derived_cast(systems.sys1),
             derived_cast(systems.sys2),
@@ -316,6 +323,7 @@ cross_system_copy_n(thrust::hip_rocprim::execution_policy<D>& device_s,
                       InputIterator                  end,
                       OutputIterator                 result)
     {
+		printf("cross_system_copy\n");
         return cross_system_copy_n(systems, begin, thrust::distance(begin, end), result);
     }
 } // namespace __copy

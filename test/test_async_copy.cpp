@@ -68,7 +68,7 @@ void AsyncCopyHostToDevice()
           thrust::host_vector<T>   h0 = get_random_data<T>(
               size, std::numeric_limits<T>::min(), std::numeric_limits<T>::max(), seed);
           thrust::device_vector<T> d0(size);
-
+			printf("size %zu\n", size);
           auto f0 = AsyncCopyCallable{}(
             h0.begin(), h0.end(), d0.begin()
           );
@@ -93,7 +93,7 @@ TYPED_TEST(AsyncCopyTests, TestAsyncTriviallyRelocatableElementsHostToDevicePoli
     using T = typename TestFixture::input_type;
     AsyncCopyHostToDevice<T, invoke_async_copy_host_to_device_fn>();
 };
-
+/*
 template <typename T, typename AsyncCopyCallable>
 void AsyncCopyDeviceToHost()
 {
@@ -138,7 +138,7 @@ TYPED_TEST(AsyncCopyTests, TestAsyncCopyTriviallyRelocatableDeviceToHostPolicies
     using T = typename TestFixture::input_type;
     AsyncCopyDeviceToHost<T, invoke_async_copy_device_to_host_fn>();
 };
-
+*/
 /*TYPED_TEST(AsyncCopyTests, TestAsyncCopyDevicetoDevice)
 {
     using T = typename TestFixture::input_type;

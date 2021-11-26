@@ -101,6 +101,7 @@ copy(execution_policy<System>& system,
      InputIterator             last,
      OutputIterator            result)
 {
+	printf("Copy 1\n");
   // struct workaround is required for HIP-clang
   // THRUST_HIP_PRESERVE_KERNELS_WORKAROUND is required for HCC
   struct workaround
@@ -148,6 +149,7 @@ copy_n(execution_policy<System>& system,
        Size                      n,
        OutputIterator            result)
 {
+		printf("Copy n 1\n");	
   // struct workaround is required for HIP-clang
   // THRUST_HIP_PRESERVE_KERNELS_WORKAROUND is required for HCC
   struct workaround
@@ -192,6 +194,7 @@ copy(cross_system<System1, System2> systems,
      InputIterator                  last,
      OutputIterator                 result)
 {
+		printf("Copy 2\n");
     return __copy::cross_system_copy(systems, first, last, result);
 } // end copy()
 
@@ -202,6 +205,7 @@ copy_n(cross_system<System1, System2> systems,
        Size                           n,
        OutputIterator                 result)
 {
+		printf("Copy n 2\n");
     return __copy::cross_system_copy_n(systems, first, n, result);
 } // end copy_n()
 

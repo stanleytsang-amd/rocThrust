@@ -20,7 +20,7 @@ endif()
 
 # rocPRIM (https://github.com/ROCmSoftwarePlatform/rocPRIM)
 if(NOT DOWNLOAD_ROCPRIM)
-  find_package(rocprim QUIET)
+  find_package(rocprim QUIET PATHS "${ROCPRIM_ROOT}")
 endif()
 if(NOT rocprim_FOUND)
   message(STATUS "Downloading and building rocprim.")

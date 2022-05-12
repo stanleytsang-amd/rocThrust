@@ -19,6 +19,8 @@ function display_help()
     echo "    [--hip-clang] build library for amdgpu backend using hip-clang"
     echo "    [--address-sanitizer] build with address sanitizer enabled"
     echo "    [--rm-legacy-include-dir] Remove legacy include dir Packaging added for file/folder reorg backward compatibility"
+    echo "    [--prefix] Install rocThrust to custom location"
+    echo "    [--rocprim-prefix] Specify rocPRIM installation path (if not /opt/rocm)"
 }
 
 
@@ -36,6 +38,8 @@ rocm_path=/opt/rocm
 build_relocatable=false
 build_address_sanitizer=false
 build_freorg_bkwdcomp=true
+install_path=${rocm_path}
+rocprim_path=${rocm_path}
 
 # #################################################
 # Parameter parsing
@@ -44,7 +48,7 @@ build_freorg_bkwdcomp=true
 # check if we have a modern version of getopt that can handle whitespace and long parameters
 getopt -T
 if [[ $? -eq 4 ]]; then
-    GETOPT_PARSE=$(getopt --name "${0}" --longoptions help,install,clients,debug,hip-clang,test,package,relocatable,address-sanitizer,rm-legacy-include-dir --options hicdtprg -- "$@")
+    GETOPT_PARSE=$(getopt --name "${0}" --longoptions help,install,clients,debug,hip-clang,test,package,relocatable,address-sanitizer,rm-legacy-include-dir,prefix:,rocprim-prefix: --options hicdtprg -- "$@")
 else
     echo "Need a new version of getopt"
     exit 1
@@ -96,9 +100,15 @@ while true; do
         --address-sanitizer)
             build_address_sanitizer=true
             shift ;;
-	--rm-legacy-include-dir)
+        --rm-legacy-include-dir)
             build_freorg_bkwdcomp=false
             shift ;;
+        --prefix)
+            install_path=${2}
+            shift 2 ;;
+        --rocprim-prefix)
+            rocprim_path=${2}
+            shift 2 ;;
         --) shift ; break ;;
         *)  echo "Unexpected command line parameter received; aborting";
             exit 1
@@ -165,7 +175,7 @@ if [[ "${build_relocatable}" == true ]]; then
          ../../. # or cmake-gui ../.
 else
     CXX=$rocm_path/bin/${compiler} ${cmake_executable} ${build_test} ${cmake_common_options} \
-        -DCMAKE_BUILD_TYPE=${build_type} ../../. # or cmake-gui ../.
+        -DCMAKE_BUILD_TYPE=${build_type}  -DCMAKE_INSTALL_PREFIX=${install_path} -DCMAKE_PREFIX_PATH=${install_path} -DROCPRIM_ROOT=${rocprim_path} ../../. # or cmake-gui ../.
 fi
 check_exit_code "$?"
 
@@ -187,3 +197,4 @@ if ($build_package); then
     make package -j$(nproc)
     check_exit_code "$?"
 fi
+

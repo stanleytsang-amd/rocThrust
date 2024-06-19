@@ -626,3 +626,10 @@ struct precision_threshold<rocprim::half>
 {
     static constexpr float percentage = 0.075f;
 };
+
+inline bool run_bitwise_repro_mode()
+{
+    char*      env = std::getenv("ROCTHRUST_BITWISE_REPRO_MODE");
+    const bool bw_repro_mode = (env != nullptr) && (strcmp(env, "1") == 0);
+    return bw_repro_mode;
+}

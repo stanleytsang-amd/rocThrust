@@ -29,6 +29,9 @@ configure_file(
     ${CMAKE_CURRENT_BINARY_DIR}/test_seed.hpp
 )
 
+include( ../cmake/SQLite.cmake )
+set(BW_REPRO_TESTS reduce transform)
+
 function(add_relative_test test_name test_target)
     get_target_property(EXE_PATH ${test_target} RUNTIME_OUTPUT_DIRECTORY)
     if(EXE_PATH STREQUAL "EXE_PATH-NOTFOUND")
@@ -78,6 +81,11 @@ function(add_rocthrust_test TEST)
                   --offload-arch=${gpu_target}
           )
       endforeach()
+    endif()
+    if (${TEST} IN_LIST BW_REPRO_TESTS)
+        target_link_libraries( ${TEST_TARGET} PUBLIC ${ROCFFT_SQLITE_LIB} )
+        target_include_directories( ${TEST_TARGET} PRIVATE ${sqlite_local_SOURCE_DIR} )
+        set_property( TARGET ${TEST_TARGET} APPEND PROPERTY LINK_LIBRARIES ${ROCFFT_SQLITE_LIB} )    
     endif()
     set_target_properties(${TEST_TARGET}
         PROPERTIES

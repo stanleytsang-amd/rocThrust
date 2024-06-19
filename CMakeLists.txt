@@ -76,6 +76,7 @@ option(BUILD_BENCHMARKS "Build benchmarks" OFF)
 option(DOWNLOAD_ROCPRIM "Download rocPRIM and do not search for rocPRIM package" OFF)
 option(BUILD_ADDRESS_SANITIZER "Build with address sanitizer enabled" OFF)
 option(ENABLE_UPSTREAM_TESTS "Enable upstream tests" OFF)
+option(ENABLE_BITWISE_REPRO_TESTS "Enable bitwise reproducibility tests in place of regular unit tests" OFF)
 #Set the header wrapper OFF by default.
 option(BUILD_FILE_REORG_BACKWARD_COMPATIBILITY "Build with file/folder reorg with backward compatibility enabled" OFF)
 
@@ -158,6 +159,10 @@ endif()
 # Benchmarks
 if(BUILD_BENCHMARKS)
   add_subdirectory(internal/benchmark)
+endif()
+
+if(ENABLE_BITWISE_REPRO_TESTS)
+  add_definitions("ENABLE_BITWISE_REPRO_TESTS=1")
 endif()
 
 #Create header wrapper for backward compatibility

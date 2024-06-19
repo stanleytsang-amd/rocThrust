@@ -107,6 +107,29 @@ struct Params<thrust::device_vector<T>, ExecutionPolicy>
                                                                     \
     TYPED_TEST_SUITE(x, y);
 
+class BWRDatabase;
+
+// Definition of typed test cases with given parameter type - bitwise reproducibility variant    
+#define BWR_TESTS_DEFINE(x, y)                                          \
+    template <class Params>                                         \
+    class bwrtest : public ::testing::Test                          \
+    {                                                               \
+    static BWRDatabase bwr_db;  \
+    static void bwrtest::SetUpTestSuite()                            \
+    {\
+                                                                    \
+    }\
+    static void bwrtest::TearDownTestSuite()                            \
+    {\
+                                                                    \
+    }    \
+    public:                                                         \
+        using input_type = typename Params::input_type;             \
+        using execution_policy = typename Params::execution_policy; \
+    };                                                              \
+                                                                    \
+    TYPED_TEST_SUITE(x, y);
+
 // Set of test parameter types
 
 // Host and device vectors of all type as a test parameter
@@ -141,7 +164,7 @@ typedef ::testing::Types<Params<thrust::host_vector<short>>,
                          Params<thrust::device_vector<float>>,
                          Params<thrust::device_vector<double>>>
     VectorSignedTestsParams;
-
+    
 // Host and device vectors of integer types as a test parameter
 typedef ::testing::Types<Params<thrust::host_vector<short>>,
                          Params<thrust::host_vector<int>>,
@@ -284,3 +307,26 @@ typedef ::testing::Types<ParamsInOut<short>,
                          ParamsInOut<unsigned int, unsigned long long>,
                          ParamsInOut<float, double>>
     AllInOutTestsParams;
+
+// Test parameter types specifically for bitwise reproducibility tests - only floating point needed
+// Host and device vectors of all type as a test parameter - BWR tests
+typedef ::testing::Types<Params<thrust::host_vector<float>>,
+                         Params<thrust::host_vector<double>>,
+                         Params<thrust::device_vector<float>>,
+                         Params<thrust::device_vector<double>>>
+    BWRFullTestsParams;   
+    
+// Host vectors of numerical types as a test parameter - BWR tests
+typedef ::testing::Types<Params<thrust::host_vector<float>>,
+                         Params<thrust::host_vector<double>>>
+    BWRHostVectorTestsParams;
+
+// Scalar numerical types
+typedef ::testing::Types<Params<float>,
+                         Params<double>>
+    BWRNumericalTestsParams;
+    
+typedef ::testing::Types<ParamsInOut<float>,
+                         ParamsInOut<double>,
+                         ParamsInOut<float, double>>
+    BWRAllInOutTestsParams;    
